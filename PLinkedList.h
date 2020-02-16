@@ -90,6 +90,11 @@ inline bool PLinkedList<transferredClass>::append(transferredClass &itemT) {
 
 }
 
+/**
+ * template<class transferredClass> inline bool PLinkedList<transferredClass>::clear()
+ * clears all items from the list and frees the allocated memory.
+ * @return true if successfull, false if not.
+ */
 template<class transferredClass>
 inline bool PLinkedList<transferredClass>::clear() {
 
@@ -114,6 +119,13 @@ inline bool PLinkedList<transferredClass>::clear() {
 	}
 }
 
+/**
+ * template<class transferredClass> inline bool PLinkedList<transferredClass>::contains(transferredClass &itemT)
+ * checks the list for the transferred item and returns true if it is in the list
+ * and false if not.
+ * @param itemT the item to look for.
+ * @return true if it is in the list, false if not.
+ */
 template<class transferredClass>
 inline bool PLinkedList<transferredClass>::contains(transferredClass &itemT) {
 
@@ -142,6 +154,11 @@ inline bool PLinkedList<transferredClass>::contains(transferredClass &itemT) {
 	}
 }
 
+/**
+ * template<class transferredClass> inline bool PLinkedList<transferredClass>::empty()
+ * checks if the list is empty or not.
+ * @return true if the list is empty, false if not.
+ */
 template<class transferredClass>
 inline bool PLinkedList<transferredClass>::empty() {
 
@@ -161,6 +178,12 @@ inline bool PLinkedList<transferredClass>::empty() {
 
 }
 
+/**
+ * template<class transferredClass> inline transferredClass& PLinkedList<transferredClass>::find(transferredClass &itemT)
+ * checks if the transferred item is in the list and returns a pointer if it is.
+ * @param itemT the item to search.
+ * @return pointer to the item if it is in the list, nullptr if not.
+ */
 template<class transferredClass>
 inline transferredClass& PLinkedList<transferredClass>::find(
 		transferredClass &itemT) {
@@ -190,6 +213,11 @@ inline transferredClass& PLinkedList<transferredClass>::find(
 
 }
 
+/**
+ * template<class transferredClass> inline transferredClass& PLinkedList<transferredClass>::First()
+ * If the list is not empty will return a pointer to the item at the begin of the list.
+ * @return pointer to the first item, nullptr if the list is empty.
+ */
 template<class transferredClass>
 inline transferredClass& PLinkedList<transferredClass>::First() {
 
@@ -201,6 +229,11 @@ inline transferredClass& PLinkedList<transferredClass>::First() {
 
 }
 
+/**
+ * template<class transferredClass> inline transferredClass& PLinkedList<transferredClass>::Last()
+ * If the list is not empty will return a pointer to the item at the end of the list.
+ * @return pointer to the last item, nullptr if the list is empty.
+ */
 template<class transferredClass>
 inline transferredClass& PLinkedList<transferredClass>::Last() {
 
@@ -211,6 +244,12 @@ inline transferredClass& PLinkedList<transferredClass>::Last() {
 	}
 }
 
+/**
+ * template<class transferredClass> inline bool PLinkedList<transferredClass>::prepend(transferredClass &itemT)
+ * Prepends the transferred item to the beginning of the list.
+ * @param itemT the item to prepend.
+ * @return true if successfull, false if not.
+ */
 template<class transferredClass>
 inline bool PLinkedList<transferredClass>::prepend(transferredClass &itemT) {
 
@@ -241,6 +280,12 @@ inline bool PLinkedList<transferredClass>::prepend(transferredClass &itemT) {
 
 }
 
+/**
+ * template<class transferredClass> inline bool PLinkedList<transferredClass>::remove(transferredClass &itemT)
+ * Searches for the transferred item, removes it from the list and destroys it.
+ * @param itemT the item to be removed.
+ * @return true if successfull, false if not.
+ */
 template<class transferredClass>
 inline bool PLinkedList<transferredClass>::remove(transferredClass &itemT) {
 
@@ -297,6 +342,11 @@ inline bool PLinkedList<transferredClass>::remove(transferredClass &itemT) {
 
 }
 
+/**
+ * template<class transferredClass> inline bool PLinkedList<transferredClass>::removeFirst()
+ * Removes the item at the beginning of the list and destroys it.
+ * @return true if successfull, false if not.
+ */
 template<class transferredClass>
 inline bool PLinkedList<transferredClass>::removeFirst() {
 
@@ -319,6 +369,11 @@ inline bool PLinkedList<transferredClass>::removeFirst() {
 
 }
 
+/**
+ * template<class transferredClass> inline bool PLinkedList<transferredClass>::removeLast()
+ * Removes the item at the end of the list and destroys it.
+ * @return true if successfull, false if not.
+ */
 template<class transferredClass>
 inline bool PLinkedList<transferredClass>::removeLast() {
 
@@ -340,12 +395,22 @@ inline bool PLinkedList<transferredClass>::removeLast() {
 	}
 }
 
+/**
+ * template<class transferredClass> inline unsigned long PLinkedList<transferredClass>::size()
+ * Returns the size of the list.
+ * @return the size of the list.
+ */
 template<class transferredClass>
 inline unsigned long PLinkedList<transferredClass>::size() {
 
 	return item_amount;
 }
 
+/**
+ * template<class transferredClass> inline transferredClass& PLinkedList<transferredClass>::takeFirst()
+ * Removes the item at the beginning of the list and returns a pointer to it.
+ * @return A pointer to the first item if successfull, nullptr if not
+ */
 template<class transferredClass>
 inline transferredClass& PLinkedList<transferredClass>::takeFirst() {
 
@@ -366,6 +431,11 @@ inline transferredClass& PLinkedList<transferredClass>::takeFirst() {
 	}
 }
 
+/**
+ * template<class transferredClass> inline transferredClass& PLinkedList<transferredClass>::takeLast()
+ * Removes the item at the end of the list and returns a pointer to it.
+ * @return A pointer to the last item if successfull, nullptr if not
+ */
 template<class transferredClass>
 inline transferredClass& PLinkedList<transferredClass>::takeLast() {
 
@@ -386,6 +456,10 @@ inline transferredClass& PLinkedList<transferredClass>::takeLast() {
 
 }
 
+/**
+ * template<class transferredClass> inline void PLinkedList<transferredClass>::printList()
+ * prints the pointer addresses of the items in the list.
+ */
 template<class transferredClass>
 inline void PLinkedList<transferredClass>::printList() {
 
