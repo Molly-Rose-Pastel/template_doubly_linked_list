@@ -17,7 +17,7 @@ template<class transferredClass>
 class PNode {
 public:
 
-	transferredClass item;
+	transferredClass *item;
 	PNode<transferredClass> *next;
 	PNode<transferredClass> *previous;
 
@@ -28,12 +28,11 @@ template<class transferredClass>
 class PLinkedList {
 private:
 
-	PNode<transferredClass> *begin = nullptr;
-	PNode<transferredClass> *end = nullptr;
+	PNode<transferredClass> *begin = new PNode<transferredClass>;
+	PNode<transferredClass> *end = new PNode<transferredClass>;
 	unsigned long item_amount = 0;
 
 public:
-
 	bool append(transferredClass &itemT);
 	bool clear();
 	bool contains(transferredClass &itemT);
@@ -63,20 +62,25 @@ inline bool PLinkedList<transferredClass>::append(transferredClass &itemT) {
 	try {
 		PNode<transferredClass> *node = new PNode<transferredClass>;
 
-		node->item = itemT;
+		node->item = &itemT;
 
-		if (begin == nullptr) {
-			begin = node;
-			end = node;
-			node->previous = nullptr;
-			node->next = nullptr;
+		if (item_amount == 0) {
+
+			begin->previous = nullptr;
+			begin->next = node;
+
+			node->previous = begin;
+			node->next = end;
+
+			end->next = nullptr;
+			end->previous = node;
 
 		} else {
 
-			end->next = node;
-			node->previous = end;
-			node->next = nullptr;
-			end = node;
+			node->previous = end->previous;
+			node->next = end;
+			node->previous->next = node;
+			end->previous = node;
 
 		}
 
@@ -98,18 +102,22 @@ inline bool PLinkedList<transferredClass>::append(transferredClass &itemT) {
 template<class transferredClass>
 inline bool PLinkedList<transferredClass>::clear() {
 
-	if (begin == nullptr) {
+	if (item_amount == 0) {
 
 		return false;
 
 	} else {
 
-		PNode<transferredClass> *pHelp = begin;
-		while (pHelp != nullptr) {
+		PNode<transferredClass> *pHelp = begin->next;
+		while (pHelp != end) {
+
+			begin->next = pHelp->next;
+			pHelp->next->previous = begin;
+
+			PNode<transferredClass> *pEraser = pHelp;
+			delete pEraser;
 
 			pHelp = pHelp->next;
-			delete &begin;
-			begin = pHelp;
 
 			item_amount -= 1;
 
@@ -129,18 +137,18 @@ inline bool PLinkedList<transferredClass>::clear() {
 template<class transferredClass>
 inline bool PLinkedList<transferredClass>::contains(transferredClass &itemT) {
 
-	if (begin == nullptr) {
+	if (item_amount == 0) {
 
 		return false;
 
 	} else {
 
 		bool retval = false;
-		PNode<transferredClass> *pHelp = begin;
+		PNode<transferredClass> *pHelp = begin->next;
 
 		while (pHelp != nullptr) {
 
-			if (pHelp->item == itemT) {
+			if (pHelp->item == &itemT) {
 				retval = true;
 				break;
 			}
@@ -190,16 +198,16 @@ inline transferredClass& PLinkedList<transferredClass>::find(
 
 	if (item_amount == 0) {
 
-		return begin->item;
+		return *begin->item;
 
 	} else {
 
-		PNode<transferredClass> *pHelp = begin;
-		while (pHelp != nullptr) {
+		PNode<transferredClass> *pHelp = begin->next;
+		while (pHelp != end) {
 
-			if (pHelp->item == itemT) {
+			if (pHelp->item == &itemT) {
 
-				return pHelp->item;
+				return *pHelp->item;
 
 			}
 
@@ -207,7 +215,7 @@ inline transferredClass& PLinkedList<transferredClass>::find(
 
 		}
 
-		return begin->item;
+		return *begin->item;
 
 	}
 
@@ -224,7 +232,7 @@ inline transferredClass& PLinkedList<transferredClass>::First() {
 	if (item_amount == 0) {
 		return nullptr;
 	} else {
-		return begin;
+		return begin->next;
 	}
 
 }
@@ -240,7 +248,7 @@ inline transferredClass& PLinkedList<transferredClass>::Last() {
 	if (item_amount == 0) {
 		return nullptr;
 	} else {
-		return end;
+		return end->previous;
 	}
 }
 
@@ -258,16 +266,20 @@ inline bool PLinkedList<transferredClass>::prepend(transferredClass &itemT) {
 		PNode<transferredClass> *node = new PNode<transferredClass>;
 		node->item = itemT;
 
-		if (begin == nullptr) {
-			begin = node;
-			end = node;
-			node->next = nullptr;
-			node->previous = nullptr;
+		if (item_amount == 0) {
+
+			begin->next = node;
+			node->previous = begin;
+			node->next = end;
+			end->previous = node;
+
 		} else {
-			node->next = begin;
-			node->previous = nullptr;
-			begin->previous = node;
-			begin = node;
+
+			begin->next->previous = node;
+			node->previous = begin;
+			node->next = begin->next;
+			begin->next = node;
+
 		}
 
 		item_amount += 1;
@@ -293,37 +305,40 @@ inline bool PLinkedList<transferredClass>::remove(transferredClass &itemT) {
 		return false;
 	} else {
 
-		PNode<transferredClass> *pHelp = begin;
-		while (pHelp != nullptr) {
+		PNode<transferredClass> *pHelp = begin->next;
+		while (pHelp != end) {
 
-			if (pHelp->item == itemT) {
+			if (pHelp->item == &itemT) {
 
-				/* could be begin, end, neither, both */
 
-				if (begin->item == itemT && end->item != itemT) {
+				/* is the first item but not the only*/
+				if (begin->next->item == &itemT && end->previous->item != &itemT) {
 
-					pHelp = pHelp->next;
-					pHelp->previous = nullptr;
-					delete &begin;
-					begin = pHelp;
-
-				} else if (end->item == itemT && begin->item != itemT) {
-
-					pHelp = pHelp->previous;
-					pHelp->next = nullptr;
-					delete &end;
-					end = pHelp;
-
-				} else if (begin->item != itemT && end->item != itemT) {
-
-					pHelp->previous->next = pHelp->next;
-					pHelp->next->previous = pHelp->previous;
+					pHelp->next->previous = begin;
+					begin->next = pHelp->next;
 					delete pHelp;
 
-				} else if (begin->item == itemT && end->item == itemT) {
+				/* is the last item but not the only*/
+				} else if (end->previous->item == &itemT && begin->next->item != &itemT) {
 
-					delete &begin;
-					delete &end;
+					pHelp->previous->next = end;
+					end->previous = pHelp->previous;
+					delete pHelp;
+
+				/* is neither first nor last */
+				} else if (begin->next->item != &itemT && end->previous->item != &itemT) {
+
+					pHelp->next->previous = pHelp->previous;
+					pHelp->previous->next = pHelp->next;
+					delete pHelp;
+
+				/* is the only item */
+				} else if (begin->next->item == &itemT && end->previous->item == &itemT) {
+
+					begin->next = end;
+					end->previous = begin;
+					delete pHelp;
+
 				}
 
 				item_amount -= 1;
@@ -354,12 +369,11 @@ inline bool PLinkedList<transferredClass>::removeFirst() {
 		return false;
 	} else {
 
-		PNode<transferredClass> *pHelp = begin;
+		PNode<transferredClass> *pHelp = begin->next;
 
-		pHelp = pHelp->next;
-		pHelp->previous = nullptr;
-		delete &begin;
-		begin = pHelp;
+		begin->next = begin->next->next;
+		begin->next->previous = begin;
+		delete pHelp;
 
 		item_amount -= 1;
 
@@ -378,15 +392,15 @@ template<class transferredClass>
 inline bool PLinkedList<transferredClass>::removeLast() {
 
 	if (item_amount == 0) {
+
 		return false;
+
 	} else {
 
-		PNode<transferredClass> *pHelp = end;
-
-		pHelp = pHelp->previous;
-		pHelp->next = nullptr;
-		delete &end;
-		end = pHelp;
+		PNode<transferredClass> *pHelp = end->previous;
+		pHelp->previous->next = end;
+		end->previous = end->previous->previous;
+		delete pHelp;
 
 		item_amount -= 1;
 
@@ -414,20 +428,18 @@ inline unsigned long PLinkedList<transferredClass>::size() {
 template<class transferredClass>
 inline transferredClass& PLinkedList<transferredClass>::takeFirst() {
 
-	if (begin != nullptr) {
-		transferredClass *pHelp;
+	if (item_amount > 0) {
+		transferredClass *pHelp = begin->next->item;
 
-		pHelp = &begin->item;
-
-		begin = begin->next;
-		begin->previous = nullptr;
+		begin->next = begin->next->next;
+		begin->next->previous = begin;
 
 		item_amount -= 1;
 
 		return *pHelp;
 
 	} else {
-		return begin->item;
+		return *begin->item;
 	}
 }
 
@@ -439,12 +451,11 @@ inline transferredClass& PLinkedList<transferredClass>::takeFirst() {
 template<class transferredClass>
 inline transferredClass& PLinkedList<transferredClass>::takeLast() {
 
-	if (end != nullptr) {
-		transferredClass *pHelp;
-		pHelp = &end->item;
+	if (item_amount > 0) {
+		transferredClass *pHelp = end->item;
 
-		end = end->previous;
-		end->next = nullptr;
+		end->previous = end->previous->previous;
+		end->previous->next = end;
 
 		item_amount -= 1;
 
@@ -464,8 +475,8 @@ template<class transferredClass>
 inline void PLinkedList<transferredClass>::printList() {
 
 	PNode<transferredClass> *pHelp;
-	pHelp = begin;
-	while (pHelp != nullptr) {
+	pHelp = begin->next;
+	while (pHelp != end) {
 		printf("%p\n", pHelp->item);
 		pHelp = pHelp->next;
 	}
