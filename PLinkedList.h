@@ -37,16 +37,16 @@ public:
 	bool clear();
 	bool contains(transferredClass &itemT);
 	bool empty();
-	transferredClass& find(transferredClass &itemT);
-	transferredClass& First();
-	transferredClass& Last();
+	transferredClass find(transferredClass &itemT);
+	transferredClass first();
+	transferredClass last();
 	bool prepend(transferredClass &itemT);
 	bool remove(transferredClass &itemT);
 	bool removeFirst();
 	bool removeLast();
 	unsigned long size();
-	transferredClass& takeFirst();
-	transferredClass& takeLast();
+	transferredClass takeFirst();
+	transferredClass takeLast();
 	void printList();
 };
 
@@ -115,9 +115,8 @@ inline bool PLinkedList<transferredClass>::clear() {
 			pHelp->next->previous = begin;
 
 			PNode<transferredClass> *pEraser = pHelp;
-			delete pEraser;
-
 			pHelp = pHelp->next;
+			delete pEraser;
 
 			item_amount -= 1;
 
@@ -193,12 +192,12 @@ inline bool PLinkedList<transferredClass>::empty() {
  * @return pointer to the item if it is in the list, nullptr if not.
  */
 template<class transferredClass>
-inline transferredClass& PLinkedList<transferredClass>::find(
+inline transferredClass PLinkedList<transferredClass>::find(
 		transferredClass &itemT) {
 
 	if (item_amount == 0) {
 
-		return *begin->item;
+		return nullptr;
 
 	} else {
 
@@ -215,7 +214,7 @@ inline transferredClass& PLinkedList<transferredClass>::find(
 
 		}
 
-		return *begin->item;
+		return nullptr;
 
 	}
 
@@ -227,12 +226,12 @@ inline transferredClass& PLinkedList<transferredClass>::find(
  * @return pointer to the first item, nullptr if the list is empty.
  */
 template<class transferredClass>
-inline transferredClass& PLinkedList<transferredClass>::First() {
+inline transferredClass PLinkedList<transferredClass>::first() {
 
 	if (item_amount == 0) {
 		return nullptr;
 	} else {
-		return begin->next;
+		return *begin->next->item;
 	}
 
 }
@@ -243,12 +242,12 @@ inline transferredClass& PLinkedList<transferredClass>::First() {
  * @return pointer to the last item, nullptr if the list is empty.
  */
 template<class transferredClass>
-inline transferredClass& PLinkedList<transferredClass>::Last() {
+inline transferredClass PLinkedList<transferredClass>::last() {
 
 	if (item_amount == 0) {
 		return nullptr;
 	} else {
-		return end->previous;
+		return *end->previous->item;
 	}
 }
 
@@ -264,7 +263,7 @@ inline bool PLinkedList<transferredClass>::prepend(transferredClass &itemT) {
 	try {
 
 		PNode<transferredClass> *node = new PNode<transferredClass>;
-		node->item = itemT;
+		node->item = &itemT;
 
 		if (item_amount == 0) {
 
@@ -310,30 +309,33 @@ inline bool PLinkedList<transferredClass>::remove(transferredClass &itemT) {
 
 			if (pHelp->item == &itemT) {
 
-
 				/* is the first item but not the only*/
-				if (begin->next->item == &itemT && end->previous->item != &itemT) {
+				if (begin->next->item == &itemT
+						&& end->previous->item != &itemT) {
 
 					pHelp->next->previous = begin;
 					begin->next = pHelp->next;
 					delete pHelp;
 
-				/* is the last item but not the only*/
-				} else if (end->previous->item == &itemT && begin->next->item != &itemT) {
+					/* is the last item but not the only*/
+				} else if (end->previous->item == &itemT
+						&& begin->next->item != &itemT) {
 
 					pHelp->previous->next = end;
 					end->previous = pHelp->previous;
 					delete pHelp;
 
-				/* is neither first nor last */
-				} else if (begin->next->item != &itemT && end->previous->item != &itemT) {
+					/* is neither first nor last */
+				} else if (begin->next->item != &itemT
+						&& end->previous->item != &itemT) {
 
 					pHelp->next->previous = pHelp->previous;
 					pHelp->previous->next = pHelp->next;
 					delete pHelp;
 
-				/* is the only item */
-				} else if (begin->next->item == &itemT && end->previous->item == &itemT) {
+					/* is the only item */
+				} else if (begin->next->item == &itemT
+						&& end->previous->item == &itemT) {
 
 					begin->next = end;
 					end->previous = begin;
@@ -426,9 +428,10 @@ inline unsigned long PLinkedList<transferredClass>::size() {
  * @return A pointer to the first item if successfull, nullptr if not
  */
 template<class transferredClass>
-inline transferredClass& PLinkedList<transferredClass>::takeFirst() {
+inline transferredClass PLinkedList<transferredClass>::takeFirst() {
 
 	if (item_amount > 0) {
+
 		transferredClass *pHelp = begin->next->item;
 
 		begin->next = begin->next->next;
@@ -439,7 +442,7 @@ inline transferredClass& PLinkedList<transferredClass>::takeFirst() {
 		return *pHelp;
 
 	} else {
-		return *begin->item;
+		return nullptr;
 	}
 }
 
@@ -449,10 +452,10 @@ inline transferredClass& PLinkedList<transferredClass>::takeFirst() {
  * @return A pointer to the last item if successfull, nullptr if not
  */
 template<class transferredClass>
-inline transferredClass& PLinkedList<transferredClass>::takeLast() {
+inline transferredClass PLinkedList<transferredClass>::takeLast() {
 
 	if (item_amount > 0) {
-		transferredClass *pHelp = end->item;
+		transferredClass *pHelp = end->previous->item;
 
 		end->previous = end->previous->previous;
 		end->previous->next = end;
@@ -462,7 +465,8 @@ inline transferredClass& PLinkedList<transferredClass>::takeLast() {
 		return *pHelp;
 
 	} else {
-		return end->item;
+
+		return nullptr;
 	}
 
 }
@@ -473,6 +477,11 @@ inline transferredClass& PLinkedList<transferredClass>::takeLast() {
  */
 template<class transferredClass>
 inline void PLinkedList<transferredClass>::printList() {
+
+	if(item_amount == 0){
+
+		printf("list is empty!\n");
+	}
 
 	PNode<transferredClass> *pHelp;
 	pHelp = begin->next;
