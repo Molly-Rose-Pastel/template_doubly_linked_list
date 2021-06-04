@@ -2,19 +2,21 @@
 doubly linked list as template implementation
 
 # Qt-style linked list. 
-
-* bool append(transferredClass &itemT);<br>
-* bool clear();<br>
-* bool contains(transferredClass &itemT);<br>
-* bool empty();<br>
-* transferredClass find(transferredClass &itemT);<br>
-* transferredClass first();<br>
-* transferredClass last();<br>
-* bool prepend(transferredClass &itemT);<br>
-* bool remove(transferredClass &itemT);<br>
-* bool removeFirst();<br>
-* bool removeLast();<br>
-* unsigned long size();<br>
-* transferredClass takeFirst();<br>
-* transferredClass takeLast();<br>
-* void printList();<br>
+ 
+DNode< T > * 	begin () 
+DNode< T > * 	end () 
+bool 	append (const T &value) 
+bool 	clear () 
+bool 	contains (const T &value) 
+bool 	empty () 
+T & 	find (const T &value) 
+T & 	first () 
+T & 	last () 
+bool 	prepend (const T &value) 
+bool 	remove (const T &value) 
+bool 	removeFirst () 
+bool 	removeLast () 
+unsigned long 	size () 
+T 	takeFirst () 
+T 	takeLast () 
+void 	print () 
